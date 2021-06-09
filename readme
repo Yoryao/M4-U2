@@ -1,0 +1,32 @@
+
+
+recomendados.
+
+inicial
+    
+
+
+
+
+
+
+proyectado
+tipo:
+    Libros
+    Peliculas
+    Discos
+
+        Libros
+            Titulo
+            Autor
+            Genero
+
+        Peliculas
+            Titulo
+            Genero
+
+        Discos
+            Titulo
+            Genero
+            Banda
+
