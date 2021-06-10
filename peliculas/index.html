@@ -5,82 +5,114 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Movies
-    </title>
-    <script src="../index.js"></script>
+    <title>Random Movies </title>
+    <link rel="stylesheet" href="../peliculas/style.css">
+    <script src="../index.js">
+    </script>
 </head>
 
 <body>
-    <h1>Random Movies</h1>
+    <h1>Random BEST Movies</h1>
 
-    <h4>////FALTA REALIZAR LA VINCULACIÓN CON D.B.</h4>
-    <section>Elije tu pelicula</section>
-    <button>Ver Recomendaciones</button>
-    <br>
+    <div id="random">
+        <h4>////FALTA REALIZAR LA VINCULACIÓN CON D.B.</h4>
+        <section>Elije tu pelicula</section>
+        <button>Ver Recomendaciones</button>
+        <br>
+    </div>
 
-    <section>Login</section>
-    <form action="/login" method="POST">
-        <table>
-            <tr>
-                <td>Usuario:</td>
-                <td><input type="text" name="user"></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type="text" name="pass"></td>
-            </tr>
-        </table>
-        <input type="reset" value="limpiar">
-        <input type="submit" value="Enviar datos">
-    </form>
+    <div id="registro">
+        <section>REGISTRO</section>
+        <form action="/registro" method="POST">
+            <table>
+                <tr>
+                    <td>Usuario:</td>
+                    <td><input type="text" name="user"></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="text" name="pass"></td>
+                </tr>
+            </table>
+            <input type="reset" value="limpiar">
+            <input type="submit" value="Enviar datos">
+        </form>
+    </div>
 
-    <h4>////EL METODO DE INGRESO FUNCIONA CORRECTAMENTE.</h4>
-    <section>Ingresa una recomendación</section>
-    <form action="/peliculas" method="POST">
-        <table>
-            <tr>
-                <td>Nombre:</td>
-                <td><input type="text" name="titulo"></td>
-            </tr>
-            <tr>
-                <td>Genero:</td>
-                <td><input type="text" name="genero"></td>
-            </tr>
-        </table>
-        <input type="reset" value="limpiar">
-        <input type="submit" value="Enviar datos">
-    </form>
-    <br>
 
-    <h4>//////INTERFAZ EN DESARROLLO//////</h4>
-    <section>Modifica el genero de una pelicula</section>
-    <form action="/" method="POST">
-        <table>
-            <tr>
-                <td>ID:</td>
-                <td><input type="number" name="id"></td>
-            </tr>
-            <tr>
-                <td>Genero:</td>
-                <td><input type="text" name="genero"></td>
-            </tr>
-        </table>
-        <input type="reset" value="limpiar">
-        <input type="submit" value="Enviar datos">
-    </form>
-    <br>
-    <h4>//////INTERFAZ EN DESARROLLO//////</h4>
-    <section>Borrar una pelicula</section>
-    <form action="/peliculas/:id" method="POST">
-        <table>
-            <tr>
-                <td>Id</td>
-                <td><input type="number" name="id"></td>
-            </tr>
-        </table>
-        <input type="reset" value="limpiar">
-        <input type="submit" value="Enviar datos">
-    </form>
+    <div id="login">
+        <section>LOGIN</section>
+        <form action="/login" method="POST">
+            <table>
+                <tr>
+                    <td>Usuario:</td>
+                    <td><input type="text" name="user"></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="text" name="pass"></td>
+                </tr>
+            </table>
+            <input type="reset" value="limpiar">
+            <input type="submit" value="Enviar datos">
+        </form>
+    </div>
+
+    <div id="ingreso">
+        <h4>////EL METODO DE INGRESO FUNCIONA CORRECTAMENTE.</h4>
+        <section>Ingresa una recomendación</section>
+        <form action="/peliculas" method="POST">
+            <table>
+                <tr>
+                    <td>Nombre:</td>
+                    <td><input type="text" name="titulo"></td>
+                </tr>
+                <tr>
+                    <td>Genero:</td>
+                    <td><input type="text" name="genero"></td>
+                </tr>
+            </table>
+            <input type="reset" value="limpiar">
+            <input type="submit" value="Enviar datos">
+        </form>
+        <br>
+    </div>
+
+
+    <div id="genero">
+        <h4>//////INTERFAZ EN DESARROLLO//////</h4>
+        <section>Modifica el genero de una pelicula</section>
+        <form action="/" method="POST">
+            <table>
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="number" name="id"></td>
+                </tr>
+                <tr>
+                    <td>Genero:</td>
+                    <td><input type="text" name="genero"></td>
+                </tr>
+            </table>
+            <input type="reset" value="limpiar">
+            <input type="submit" value="Enviar datos">
+        </form>
+        <br>
+    </div>
+
+    <div id="borrar">
+        <h4>//////INTERFAZ EN DESARROLLO//////</h4>
+        <section>Borrar una pelicula</section>
+        <form action="/peliculas/:id" method="POST">
+            <table>
+                <tr>
+                    <td>Id</td>
+                    <td><input type="number" name="id"></td>
+                </tr>
+            </table>
+            <input type="reset" value="limpiar">
+            <input type="submit" value="Enviar datos">
+        </form>
+    </div>
 </body>
 
 </html>

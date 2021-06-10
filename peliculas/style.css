@@ -1,0 +1,13 @@
+div {
+    display: inline-block;
+    border: 3px tomato solid;
+    margin: 10px;
+    padding: 10px;
+}
+
+#registro {
+    display: inline-block;
+    border: 3px tomato solid;
+    margin: 10px;
+    padding: 10px;
+}

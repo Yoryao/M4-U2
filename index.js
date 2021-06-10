@@ -20,13 +20,51 @@ app.use(express.static("peliculas"));
 //mapeo de petición a JSON 
 app.use(express.json());
 
+//comienza reconocimiento
+const auth = (req, res, next) => {
+    try {
+        let token = req.headers['authorization']
+
+        if (!token) {
+            throw new Error('No estas logueado.');
+        };
+
+        token = token.replace('Bearer ', '');
+
+        jwt.verify(token, 'Secret', (err, user) => {
+            if (err) {
+                throw new Error('Token Invalido');
+            }
+
+            next;
+
+        })
+    } catch (e) {
+        console.log('Error inesperado. Verificar Autenticación.');
+    }
+};
+
+auth.unless = unless;
+
+app.use(auth.unless({
+    path: [
+        { url: '/registro', methods: ['POST'] },
+        { url: '/login', methods: ['POST'] },
+    ]
+}));
+
+const volverFallo = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">            <title>Formulario de registro</title></head><body>        <header><h1>Random Movies</h1><h3>Verifique los datos ingresado.</h3></header><button><a href="index.html">Volver al registro</a></button></body><script src="app.js"></script></html>';
+
+const volverFalloRegistro = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">            <title>Formulario de registro</title></head><body>        <header><h1>Random Movies</h1><h3>Registro: el nombre de usuario ya existe. Ingrese otro.<br> Login: El usuario no se encuentra. Verifique el nombre.</h3></header><button><a href="index.html">Volver al registro</a></button></body><script src="app.js"></script></html>';
+
 //AUTETICACIÓN
 //1) REGISTRO
 app.post('/registro', async(req, res) => {
     try {
+
         //Valido recibir todos los datos
         if (!req.body.user || req.body.user == '' || !req.body.pass || req.body.pass == '') {
-            res.status(413).send({ mensaje: 'Verifique los datos ingresados' });
+            res.status(413).send(volverFallo);
             return;
         }
 
@@ -37,32 +75,37 @@ app.post('/registro', async(req, res) => {
         const userQuery = await qy(userExist, [req.body.user]);
 
         if (userQuery.length > 0) {
-            res.status(413).send('El usuario ya existe, por favor modifiquelo.');
+            res.status(413).send(volverFalloRegistro);
             return;
         };
 
+        const volverExitoRegistro = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">            <title>Formulario de registro</title></head><body>        <header><h1>Random Movies</h1><h3>Registro del usuario exitoso.</h3></header><button><a href="index.html">Volver al registro</a></button></body><script src="app.js"></script></html>';
+
 
         const crypted = await bcrypt.hash(req.body.pass, 10);
-        console.log(crypted);
-
 
         const query = "INSERT INTO registro(usuario, pass) VALUE ( ?, ? )";
         const answer = await qy(query, [user, crypted]);
-        res.status(200).send(answer);
+        res.status(200).send(volverExitoRegistro);
 
 
     } catch (e) {
-        console.log('Error Inesperado');
+        const volverError = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">            <title>Formulario de registro</title></head><body>        <header><h1>Random Movies</h1><h3>Error inesperado.</h3></header><button><a href="index.html">Volver al registro</a></button></body><script src="app.js"></script></html>';
+
+
+        console.log(volverError);
     }
 });
-
+//1) FIN DE REGISTRO
 
 
 //2) LOGIN
 app.post('/login', async(req, res) => {
     try {
+
+        //valido recibir todos los datos.
         if (!req.body.user || req.body.user == '' || !req.body.pass || req.body.pass == '') {
-            res.status(413).send('Los datos son obligatorios');
+            res.status(413).send(volverFallo);
             return;
         }
 
@@ -70,108 +113,52 @@ app.post('/login', async(req, res) => {
         const userSearch = 'SELECT * FROM registro WHERE usuario = ?';
         const querySearch = await qy(userSearch, [req.body.user]);
 
-        //verifico que no exista
+        //verifico que exista
         if (querySearch.length <= 0) {
-            res.status(413).send('El usuario no existe.');
+            res.status(413).send(volverFalloRegistro);
             return;
         }
 
         //comparar las claves
         const claveUser = req.body.pass;
 
+
         //extraigo clave desde la DB
         const passSearch = 'SELECT pass FROM registro WHERE usuario = ?';
         const claveSearch = await qy(passSearch, [req.body.user]);
 
-        claveDB = claveSearch[0].pass;
+        const claveDB = claveSearch[0].pass;
 
-        const volver = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">            <title>Formulario de registro</title></head><body>        <header><h1>Random Movies</h1><h3>Ingreso Exitoso.</h3></header><button><a href="index.html">Volver al registro</a></button></body><script src="app.js"></script></html>';
+        const volverFalloLogin = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">            <title>Formulario de registro</title></head><body>        <header><h1>Random Movies</h1><h3>La contraseña no coincide.</h3></header><button><a href="index.html">Volver al registro</a></button></body><script src="app.js"></script></html>';
 
-        //comparo las claves
-        if (claveDB == claveUser) {
-            console.log('Coincide?');
-            res.status(413).send(volver);
-        } else {
-            console.log('La clave no coincide.');
+        const volverExitoLogin = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">            <title>Formulario de registro</title></head><body>        <header><h1>Random Movies</h1><h3>Ingreso Exitoso.</h3></header><button><a href="index.html">Volver al registro</a></button></body><script src="app.js"></script></html>';
+
+        if (!bcrypt.compareSync(claveUser, claveDB)) {
+            res.status(413).send(volverFalloLogin);
         };
-
-        /*
-        if (!bcrypt.compareSync(req.body.pass, crypted)) {
-            res.status(413).send('La contraseña no coincide.')
-        }*/
 
         //iniciar sesion
-        /*      const tokenInfo = {
-            user: 'jorge',
-            pass: 'clave'
+        const tokenInfo = {
+            user: req.body.user,
         };
 
-        const token = jwt.sign(tokenInfo, 'secret', {
+        const token = jwt.sign(tokenInfo, 'Secret', {
             expiresIn: 60 * 60 * 24 //1dia
         });
-        res.send(token)
-*/
-
-
-
-
-
-
+        res.send({ token });
 
     } catch (e) {
         console.log('Error Inesperado');
     }
 
-
-
-
-
-
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//VERIFICACION
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //DESARROLLO DE LAS CONSULTAS
 
 //busqueda de todas las peliculas: GET + localhost:3000/peliculas
 app.get('/peliculas', async(req, res) => {
     try {
+
 
         const query = 'SELECT * FROM peliculas'; //declaro la consulta
         const answer = await qy(query); //capturo la consulta
